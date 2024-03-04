@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::prefix('locations')->group(function () {
+	Route::get('/', [App\Http\Controllers\LocationController::class, 'index']);
+	Route::get('/travels', [App\Http\Controllers\LocationTravelController::class, 'index']);
+});
+Route::get('car_types', [App\Http\Controllers\CarTypeController::class, 'index']);
+Route::prefix('orders')->group(function () {
+	Route::get('/', [App\Http\Controllers\OrderController::class, 'index']);
+	Route::post('/', [App\Http\Controllers\OrderController::class, 'store']);
 });

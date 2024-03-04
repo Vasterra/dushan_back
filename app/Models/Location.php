@@ -8,7 +8,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Location extends Model
 {
-    use HasFactory, SoftDeletes;
+	use HasFactory, SoftDeletes;
 
-    public $guarded = [];
+	public $guarded = [];
+
+	public function pickupTravels()
+	{
+		return $this->hasMany(LocationTravel::class, 'pickup_location_id');
+	}
+
+	public function dropOffTravels()
+	{
+		return $this->hasMany(LocationTravel::class, 'drop_off_location_id');
+	}
 }
