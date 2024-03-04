@@ -14,8 +14,8 @@ class LocationAddedStopSeeder extends Seeder
     {
         // Vienna to Prague
         LocationAddedStop::create([
-                        'name' => 'Lednice Chateau',
-                        'location_travel_id' => 1,
+                'name' => 'Lednice Chateau',
+                'location_travel_id' => 1,
                 'price' => 35,
                 'price_for_8_pax' => 70,
                 'lat' => 48.8016039,
