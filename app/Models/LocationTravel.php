@@ -12,11 +12,6 @@ class LocationTravel extends Model
 
     public $guarded = [];
 
-    public function carType()
-    {
-        return $this->belongsTo(CarType::class, 'car_type_id', 'id');
-    }
-
     public function pickUpLocation()
     {
         return $this->belongsTo(Location::class, 'pickup_location_id', 'id');
@@ -30,5 +25,10 @@ class LocationTravel extends Model
     public function addedStops()
     {
         return $this->hasMany(LocationAddedStop::class, 'location_travel_id', 'id');
+    }
+
+    public function prices()
+    {
+        return $this->hasMany(LocationTravelPrice::class, 'location_travel_id', 'id');
     }
 }

@@ -12,6 +12,7 @@ return new class extends Migration {
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->uuid();
             $table->date('departure_date');
             $table->time('departure_time');
             $table->string('first_name');

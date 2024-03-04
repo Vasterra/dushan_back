@@ -10,17 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('location_added_stops', function (Blueprint $table) {
+        Schema::create('location_travel_prices', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->unsignedInteger('price');
-            $table->unsignedInteger('price_for_8_pax');
+            $table->unsignedBigInteger('car_type_id');
             $table->unsignedBigInteger('location_travel_id');
-            $table->float('lat', 10, 8)->nullable();
-            $table->float('lng', 10, 8)->nullable();
+            $table->unsignedInteger('price');
             $table->timestamps();
             $table->softDeletes();
 
+            $table->foreign('car_type_id')->on('car_types')->references('id')->cascadeOnDelete();
             $table->foreign('location_travel_id')->on('location_travel')->references('id')->cascadeOnDelete();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('location_added_stops');
+        Schema::dropIfExists('location_travel_prices');
     }
 };
