@@ -12,6 +12,8 @@ class Location extends Model
 
 	public $guarded = [];
 
+	public $appends = ['coords'];
+
 	public function pickupTravels()
 	{
 		return $this->hasMany(LocationTravel::class, 'pickup_location_id');
@@ -20,5 +22,10 @@ class Location extends Model
 	public function dropOffTravels()
 	{
 		return $this->hasMany(LocationTravel::class, 'drop_off_location_id');
+	}
+
+	public function getCoordsAttribute()
+	{
+		return [$this->lng, $this->lat];
 	}
 }

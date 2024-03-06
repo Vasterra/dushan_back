@@ -21,4 +21,5 @@ Route::get('car_types', [App\Http\Controllers\CarTypeController::class, 'index']
 Route::prefix('orders')->group(function () {
 	Route::get('/', [App\Http\Controllers\OrderController::class, 'index']);
 	Route::post('/', [App\Http\Controllers\OrderController::class, 'store']);
+	Route::get('/{any_order}', [App\Http\Controllers\OrderController::class, 'show']);
 });

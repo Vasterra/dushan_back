@@ -8,12 +8,19 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class LocationAddedStop extends Model
 {
-    use HasFactory, SoftDeletes;
+	use HasFactory, SoftDeletes;
 
-    public $guarded = [];
+	public $guarded = [];
 
-    public function locationTravel()
-    {
-        return $this->belongsTo(LocationTravel::class, 'location_travel_id', 'id');
-    }
+	public $appends = ['coords'];
+
+	public function locationTravel()
+	{
+		return $this->belongsTo(LocationTravel::class, 'location_travel_id', 'id');
+	}
+
+	public function getCoordsAttribute()
+	{
+		return [$this->lng, $this->lat];
+	}
 }
