@@ -71,7 +71,8 @@ class OrderController extends Controller
 
 			$order_refresh = $order->refresh();
 
-			\Mail::to($order->email)->send(new OrderStoreMail($order_refresh));
+			\Mail::to($order->email)
+					->send(new OrderStoreMail($order_refresh));
 
 			return $order_refresh;
 		} catch (\Exception $exception) {

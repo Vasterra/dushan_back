@@ -14,12 +14,22 @@ class OrderStoreMail extends Mailable implements ShouldQueue
 {
 	use Queueable, SerializesModels;
 
+	public string $stops;
+
 	/**
 	 * Create a new message instance.
 	 */
 	public function __construct(public Order $order)
 	{
-		//
+		$stops = $order->stops()->get()?->map(function ($stop) {
+			return $stop->locationStop?->name;
+		})->toArray();
+
+		if (count($stops)) {
+			$this->stops = implode(',', $stops) ?? '';
+		} else {
+			$this->stops = '';
+		}
 	}
 
 	/**
