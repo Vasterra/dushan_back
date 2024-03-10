@@ -14,18 +14,14 @@
         }
     }
     .success-order__logo {
-        display: flex !important;
-        justify-content: center !important;
-        align-items: center !important;
+        text-align: center !important;
         width: 100%;
     }
     .success-order__title {
         color: #030000;
         margin-bottom: 24px;
         margin-top: 24px;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        text-align: center !important;
     }
     @media screen and (min-width: 568px) {
         .success-order__title {
@@ -34,9 +30,7 @@
     }
     .success-order__title span {
         width: 100%;
-        display: flex !important;
-        align-items: center !important;
-        justify-content: center !important;
+        text-align: center !important;
         font-size: 20px !important;
         font-family: DM Sans, sans-serif !important;
         font-weight: 500 !important;
@@ -45,7 +39,6 @@
     }
     @media screen and (min-width: 568px) {
         .success-order__title span {
-
             font-size: 28px !important;
             font-family: DM Sans, sans-serif !important;
             font-weight: 500 !important;
@@ -58,13 +51,17 @@
         border-radius: 8px;
         padding: 12px;
     }
-    @media screen and (min-width: 568px) {
-        .success-order__card {
-            padding: 24px;
-        }
+    .success-order__card p {
+        color: #030000 !important;
     }
     .success-order__card:last-of-type {
         margin-top: 8px !important;
+    }
+    @media screen and (min-width: 568px) {
+        .success-order__card {
+            padding: 24px;
+            margin-top: 8px !important;
+        }
     }
     .success-order .card__item {
         padding: 8px 0;
@@ -81,13 +78,12 @@
         border-bottom: 1px solid #EAE9E9;
     }
     .success-order .card__item--icon {
-        min-width: 32px;
+        width: 32px;
         height: 32px;
         border-radius: 50%;
         background-color: #EAE9E9;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        text-align: center !important;
+        padding-top: 8px !important;
     }
     .success-order .card__item--info {
         margin-left: 8px;
@@ -128,7 +124,7 @@
     <div class="success-order__logo">
         <img src="{{ asset('/assets/images/email/logo-black.png') }}" alt="logo.png">
     </div>
-    <p class="success-order__title"><span>Booking is made successfully!</span></p>
+    <p class="success-order__title"><span>Booking confirmation</span></p>
     <div class="success-order__card card">
         <div class="card__item">
             <div class="card__item--icon">
