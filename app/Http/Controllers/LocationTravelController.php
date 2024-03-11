@@ -8,6 +8,6 @@ class LocationTravelController extends Controller
 {
 	public function index()
 	{
-		return LocationTravel::with('addedStops', 'prices')->get();
+		return LocationTravel::with('addedStops', 'prices.carType')->get();
 	}
 }
