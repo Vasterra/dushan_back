@@ -23,3 +23,8 @@ Route::prefix('orders')->group(function () {
 	Route::post('/', [App\Http\Controllers\OrderController::class, 'store']);
 	Route::get('/{any_order}', [App\Http\Controllers\OrderController::class, 'show']);
 });
+
+Route::prefix('stripe')->group(function () {
+	Route::post('/webhook', [App\Http\Controllers\StripeController::class, 'webhookHandler']);
+	Route::get('/session-id/{any_order}', [App\Http\Controllers\StripeController::class, 'createSessionId']);
+});

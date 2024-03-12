@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Enum\TransactionStatusesEnum;
 use App\Http\Requests\OrderStoreRequest;
-use App\Mail\OrderStoreMail;
 use App\Models\LocationAddedStop;
 use App\Models\LocationTravel;
 use App\Models\Order;
@@ -26,16 +26,21 @@ class OrderController extends Controller
 		$departure_date = Carbon::parse($request['departure_date'])->toDateString();
 		$departure_time = Carbon::parse($request['departure_time'])->toTimeString();
 
-		if (Order::where([
+		$order_exists = Order::where([
 				'location_travel_id' => $location_travel->id,
 				'departure_date' => $departure_date,
 				'departure_time' => $departure_time,
 				'car_type_id' => $request['car_type_id'],
 				'email' => $request['email'],
 				'phone' => $request['phone'],
-		])->exists()) {
-			throw ValidationException::withMessages(['order_exists' => 'PPP']);
+		])->whereHas('transactions', function ($t) {
+			$t->whereStatus(TransactionStatusesEnum::PAYMENT_INTENT_CREATED);
+		})->first();
+
+		if ($order_exists && $order_exists->stops()->whereIn('id', $request['stops_id'])->exists()) {
+			throw ValidationException::withMessages(['order_exists' => 'An unpaid trip for this time, with selected stops and for this mail already exists']);
 		}
+
 		\DB::beginTransaction();
 
 		try {
@@ -70,9 +75,6 @@ class OrderController extends Controller
 			\DB::commit();
 
 			$order_refresh = $order->refresh();
-
-			\Mail::to($order->email)
-					->send(new OrderStoreMail($order_refresh));
 
 			return $order_refresh;
 		} catch (\Exception $exception) {

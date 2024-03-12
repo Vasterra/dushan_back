@@ -30,4 +30,9 @@ class Order extends Model
 	{
 		return $this->hasMany(OrderLocationStop::class, 'order_id', 'id');
 	}
+
+	public function transactions()
+	{
+		return $this->hasMany(Transaction::class, 'order_id', 'id');
+	}
 }
