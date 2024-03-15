@@ -26,11 +26,13 @@ return new class extends Migration {
 			$table->integer('cost');
 			$table->unsignedBigInteger('location_travel_id');
 			$table->unsignedBigInteger('car_type_id');
+			$table->unsignedBigInteger('status_id');
 			$table->timestamps();
 			$table->softDeletes();
 
 			$table->foreign('car_type_id')->on('car_types')->references('id')->cascadeOnDelete();
 			$table->foreign('location_travel_id')->on('location_travel')->references('id')->cascadeOnDelete();
+			$table->foreign('status_id')->on('order_statuses')->references('id')->cascadeOnDelete();
 		});
 	}
 

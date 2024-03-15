@@ -19,7 +19,7 @@ class OrderStoreRequest extends FormRequest
 			'first_name' => 'required',
 			'last_name' => 'required',
 			'phone' => 'required',
-			'email' => 'required',
+			'email' => 'required|email',
 			'custom_notes' => 'nullable',
 			'is_pm' => 'boolean',
 			'adults' => 'integer',

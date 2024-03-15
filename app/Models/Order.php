@@ -21,6 +21,11 @@ class Order extends Model
 		return $this->belongsTo(LocationTravel::class, 'location_travel_id', 'id');
 	}
 
+	public function status()
+	{
+		return $this->belongsTo(OrderStatus::class, 'status_id', 'id');
+	}
+
 	public function carType()
 	{
 		return $this->belongsTo(CarType::class, 'car_type_id', 'id');

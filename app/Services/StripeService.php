@@ -61,11 +61,20 @@ class StripeService
 				$data = [
 						'status' => $status,
 				];
+				if ($status == TransactionStatusesEnum::PAYMENT_INTENT_CANCELED) {
+					$transaction->order->update([
+							'status_id' => 4,
+					]);
+				}
 				if ($status == TransactionStatusesEnum::PAYMENT_INTENT_SUCCEEDED) {
 					$data['actual_amount'] = $price['unit_amount'];
 
 					\Mail::to($transaction->order->email)
 							->send(new OrderStoreMail($transaction->order));
+
+					$transaction->order->update([
+							'status_id' => 3,
+					]);
 				}
 
 				$transaction->update($data);

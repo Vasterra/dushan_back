@@ -7,6 +7,7 @@ use App\Http\Requests\OrderStoreRequest;
 use App\Models\LocationAddedStop;
 use App\Models\LocationTravel;
 use App\Models\Order;
+use App\Models\OrderStatus;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 
@@ -14,36 +15,38 @@ class OrderController extends Controller
 {
 	public function store(OrderStoreRequest $request)
 	{
-		$location_travel = LocationTravel::where([
-				'pickup_location_id' => $request['pickup_location_id'],
-				'drop_off_location_id' => $request['drop_off_location_id'],
-		])->first();
-
-		if (! $location_travel === $request['location_travel_id']) {
-			throw ValidationException::withMessages(['location_travel_id' => 'The route you selected does not exist']);
-		}
-
-		$departure_date = Carbon::parse($request['departure_date'])->toDateString();
-		$departure_time = Carbon::parse($request['departure_time'])->toTimeString();
-
-		$order_exists = Order::where([
-				'location_travel_id' => $location_travel->id,
-				'departure_date' => $departure_date,
-				'departure_time' => $departure_time,
-				'car_type_id' => $request['car_type_id'],
-				'email' => $request['email'],
-				'phone' => $request['phone'],
-		])->whereHas('transactions', function ($t) {
-			$t->whereStatus(TransactionStatusesEnum::PAYMENT_INTENT_CREATED);
-		})->first();
-
-		if ($order_exists && $order_exists->stops()->whereIn('id', $request['stops_id'])->exists()) {
-			throw ValidationException::withMessages(['order_exists' => 'An unpaid trip for this time, with selected stops and for this mail already exists']);
-		}
-
 		\DB::beginTransaction();
 
 		try {
+			$location_travel = LocationTravel::where([
+					'pickup_location_id' => $request['pickup_location_id'],
+					'drop_off_location_id' => $request['drop_off_location_id'],
+			])->first();
+
+			if (! $location_travel === $request['location_travel_id']) {
+				throw ValidationException::withMessages(['location_travel_id' => 'The route you selected does not exist']);
+			}
+
+			$departure_date = Carbon::parse($request['departure_date'])->toDateString();
+			$departure_time = Carbon::parse($request['departure_time'])->toTimeString();
+
+			if (Carbon::parse("$departure_date $departure_time")->diffInHours(now()) < 48) {
+				throw ValidationException::withMessages(['departure_date_time' => 'You can book your trip at least 48 hours before departure']);
+			}
+
+			$order_exists = Order::where([
+					'location_travel_id' => $location_travel->id,
+					'car_type_id' => $request['car_type_id'],
+			])
+					->where(\DB::raw('adults + children'), '!=', $request['adults'] + $request['children'])
+					->whereHas('transactions', function ($t) {
+						$t->whereStatus(TransactionStatusesEnum::PAYMENT_INTENT_CREATED);
+					})->first();
+
+			if ($order_exists && $order_exists->stops()->whereIn('id', $request['stops_id'])->exists()) {
+				throw ValidationException::withMessages(['order_exists' => 'An unpaid trip for this time, with selected stops and for this mail already exists']);
+			}
+
 			$order = Order::create(
 				$request
 						->safe()
@@ -52,9 +55,13 @@ class OrderController extends Controller
 								'cost' => 0,
 								'departure_date' => $departure_date,
 								'departure_time' => $departure_time,
+								'status_id' => OrderStatus::CREATED,
 						])
 						->except('stops_id', 'pickup_location_id', 'drop_off_location_id')
 			);
+			$order->update([
+					'status_id' => 2,
+			]);
 			$cost = $location_travel->prices()->where('car_type_id', $request['car_type_id'])->first()?->price ?? 0;
 			$passengers_count = $request['adults'] + $request['children'];
 			if (count($request['stops_id'])) {
@@ -78,8 +85,9 @@ class OrderController extends Controller
 
 			return $order_refresh;
 		} catch (\Exception $exception) {
+			info($exception->getMessage());
 			\DB::rollBack();
-			throw ValidationException::withMessages(['order_exists' => $exception->getMessage()]);
+			throw ValidationException::withMessages(['order' => $exception->getMessage()]);
 		}
 	}
 

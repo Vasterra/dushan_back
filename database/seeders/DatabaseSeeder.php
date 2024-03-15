@@ -20,8 +20,7 @@ class DatabaseSeeder extends Seeder
 				LocationTravelSeeder::class,
 				LocationTravelPriceSeeder::class,
 				LocationAddedStopSeeder::class,
-//                OrderSeeder::class,
-//                OrderLocationSeeder::class,
+				OrderStatusSeeder::class,
 		]);
 	}
 }
