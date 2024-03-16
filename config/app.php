@@ -170,6 +170,7 @@ return [
 				App\Providers\RouteServiceProvider::class,
 				Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
 				App\Providers\HelperServiceProvider::class,
+				PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider::class,
 		])->toArray(),
 
 		/*

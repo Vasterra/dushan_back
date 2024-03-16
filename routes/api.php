@@ -30,5 +30,8 @@ Route::prefix('stripe')->group(function () {
 });
 
 Route::prefix('admin')->group(function () {
-	Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index']);
+	Route::post('/login', [App\Http\Controllers\Admin\AuthController::class, 'login']);
+	Route::middleware('auth:api-admin')->group(function () {
+		Route::post('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index']);
+	});
 });

@@ -8,15 +8,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
-    public function run(): void
-    {
-        User::create([
-                'name' => 'Admin',
-                'email' => 'admin@gmail.com',
-                'password' => Hash::make('1234'),
-        ]);
-    }
+	/**
+	 * Run the database seeds.
+	 */
+	public function run(): void
+	{
+		User::create([
+				'name' => 'Admin',
+				'email' => 'admin@gmail.com',
+				'role_id' => 1,
+				'password' => Hash::make('1234'),
+		]);
+	}
 }

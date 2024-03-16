@@ -19,7 +19,7 @@ class StripeService
 
 	public function createSessionId(Order $order)
 	{
-		$cost = 2 * 100;
+		$cost = $order->cost * 100;
 		$currency = 'EUR';
 		$transaction_uuid = \Str::uuid();
 		$order->transactions()->create([

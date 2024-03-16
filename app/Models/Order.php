@@ -14,6 +14,11 @@ class Order extends Model
 
 	public $casts = [
 			'is_pm' => 'boolean',
+			'departure_time' => 'datetime:H:i',
+	];
+
+	protected $appends = [
+			'full_name',
 	];
 
 	public function travel()
@@ -39,5 +44,10 @@ class Order extends Model
 	public function transactions()
 	{
 		return $this->hasMany(Transaction::class, 'order_id', 'id');
+	}
+
+	public function getFullNameAttribute()
+	{
+		return  "$this->last_name $this->first_name";
 	}
 }
