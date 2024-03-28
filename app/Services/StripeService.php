@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use App\Enum\TransactionStatusesEnum;
-use App\Mail\OrderStoreMail;
+use App\Jobs\OrderStoreMailJob;
 use App\Models\Order;
 use App\Models\Transaction;
 use Stripe\Stripe;
 
 class StripeService
 {
-	public string $domain = 'http://localhost:8080';
+	public string $domain = 'https://theluxurytransfers.com';
 
 	public function __construct()
 	{
@@ -22,19 +22,8 @@ class StripeService
 		$cost = $order->cost * 100;
 		$currency = 'EUR';
 		$transaction_uuid = \Str::uuid();
-		$order->transactions()->create([
-				'status' => TransactionStatusesEnum::PAYMENT_INTENT_CREATED,
-				'quantity' => 1,
-				'expected_amount' => $cost,
-				'currency' => $currency,
-				'uuid' => $transaction_uuid,
-		]);
 
-		return \Stripe\Checkout\Session::create([
-				'metadata' => [
-						'transaction_uuid' => $transaction_uuid,
-						'order_id' => $order->id,
-				],
+		$session = \Stripe\Checkout\Session::create([
 				'customer_email' => $order->email,
 				'line_items' => [[
 						'quantity' => 1,
@@ -46,38 +35,42 @@ class StripeService
 								],
 						],
 				]],
+				'metadata' => [
+						'transaction_uuid' => $transaction_uuid,
+						'order_id' => $order->id,
+				],
 				'mode' => 'payment',
 				'success_url' => $this->domain."/orders/$order->uuid",
-				'cancel_url' => $this->domain.'/cancel.html',
 		]);
+
+		$order->transactions()->create([
+				'status' => TransactionStatusesEnum::PAYMENT_INTENT_CREATED,
+				'quantity' => 1,
+				'expected_amount' => $cost,
+				'currency' => $currency,
+				'uuid' => $transaction_uuid,
+				'payment_intent' => $session?->payment_intent,
+				'session_id' => $session?->id,
+		]);
+
+		return $session;
 	}
 
-	public function updateStatusTransactions(array $data, string $status)
+	public function updateStatusTransactions(string $status, array $data)
 	{
-		$metadata = $data['metadata'] ?? null;
-		if ($metadata && isset($data['items'][0])) {
-			$price = $data['items'][0]['price'];
-			if ($transaction = Transaction::whereUuid($metadata['transaction_uuid'])->first()) {
-				$data = [
-						'status' => $status,
-				];
-				if ($status == TransactionStatusesEnum::PAYMENT_INTENT_CANCELED) {
-					$transaction->order->update([
-							'status_id' => 4,
-					]);
-				}
-				if ($status == TransactionStatusesEnum::PAYMENT_INTENT_SUCCEEDED) {
-					$data['actual_amount'] = $price['unit_amount'];
+		if ($status === 'checkout.session.completed') {
+			if ($transaction = Transaction::where('session_id', $data['id'])->first()) {
+				$transaction->update([
+						'payment_intent' => $data['payment_intent'],
+						'actual_amount' => $transaction->expected_amount,
+						'status' => TransactionStatusesEnum::PAYMENT_INTENT_SUCCEEDED,
+				]);
 
-					\Mail::to($transaction->order->email)
-							->send(new OrderStoreMail($transaction->order));
+				OrderStoreMailJob::dispatch($transaction->order);
 
-					$transaction->order->update([
-							'status_id' => 3,
-					]);
-				}
-
-				$transaction->update($data);
+				$transaction->order->update([
+						'status_id' => 3,
+				]);
 			}
 		}
 	}

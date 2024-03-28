@@ -10,13 +10,8 @@ return new class extends Migration {
 	 */
 	public function up(): void
 	{
-		Schema::create('locations', function (Blueprint $table) {
-			$table->id();
-			$table->string('name');
-			$table->float('lat', 10, 8)->nullable();
-			$table->float('lng', 10, 8)->nullable();
-			$table->timestamps();
-			$table->softDeletes();
+		Schema::table('transactions', function (Blueprint $table) {
+			$table->string('session_id')->nullable();
 		});
 	}
 
@@ -25,6 +20,8 @@ return new class extends Migration {
 	 */
 	public function down(): void
 	{
-		Schema::dropIfExists('locations');
+		Schema::table('transactions', function (Blueprint $table) {
+			$table->dropColumn('session_id');
+		});
 	}
 };

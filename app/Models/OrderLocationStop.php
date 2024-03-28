@@ -8,17 +8,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class OrderLocationStop extends Model
 {
-    use HasFactory, SoftDeletes;
+	use HasFactory, SoftDeletes;
 
-    public $guarded = [];
+	public $guarded = [];
 
-    public function order()
-    {
-        return $this->belongsTo(Order::class, 'order_id', 'id');
-    }
+	public function order()
+	{
+		return $this->belongsTo(Order::class, 'order_id', 'id');
+	}
 
-    public function locationStop()
-    {
-        return $this->belongsTo(LocationAddedStop::class, 'location_stop_id', 'id');
-    }
+	public function locationStop()
+	{
+		return $this->belongsTo(LocationAddedStop::class, 'location_stop_id', 'id');
+	}
 }

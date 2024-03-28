@@ -12,6 +12,6 @@ class OrderController extends Controller
 	{
 		return Order::withTrashed()
 				->with(['status', 'travel' => fn ($t) => $t->with('pickUpLocation', 'dropOffLocation'), 'carType', 'transactions'])
-				->paginate(15);
+				->get();
 	}
 }

@@ -15,9 +15,7 @@ class StripeController extends Controller
 
 	public function webhookHandler(Request $request)
 	{
-		$service = (new StripeService());
-
-		$service->updateStatusTransactions($request['type'], $request['data']['object']);
+		(new StripeService())->updateStatusTransactions($request['type'], $request['data']);
 
 		return response([], 200);
 	}

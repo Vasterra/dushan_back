@@ -1,0 +1,13 @@
+apps:
+  - name: dushan-queue-worker
+    script: artisan
+    exec_mode: fork
+    interpreter: php
+    instances: 1
+    numprocs: 4
+    autostart: true
+    autorestart: true
+    args:
+      - queue:work
+      - --tries=5
+      - --sleep=1

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enum\TransactionStatusesEnum;
 use App\Http\Requests\OrderStoreRequest;
 use App\Models\LocationAddedStop;
 use App\Models\LocationTravel;
@@ -37,13 +36,16 @@ class OrderController extends Controller
 			$order_exists = Order::where([
 					'location_travel_id' => $location_travel->id,
 					'car_type_id' => $request['car_type_id'],
+					'email' => $request['email'],
+					'departure_date' => $departure_date,
+					'departure_time' => $departure_time,
 			])
-					->where(\DB::raw('adults + children'), '!=', $request['adults'] + $request['children'])
-					->whereHas('transactions', function ($t) {
-						$t->whereStatus(TransactionStatusesEnum::PAYMENT_INTENT_CREATED);
-					})->first();
+					->where(\DB::raw('adults + children'), '=', $request['adults'] + $request['children'])
+					->whereHas('stops', function ($t) use ($request) {
+						$t->whereIn('location_stop_id', $request['stops_id']);
+					})->exists();
 
-			if ($order_exists && $order_exists->stops()->whereIn('id', $request['stops_id'])->exists()) {
+			if ($order_exists) {
 				throw ValidationException::withMessages(['order_exists' => 'An unpaid trip for this time, with selected stops and for this mail already exists']);
 			}
 

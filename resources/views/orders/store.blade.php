@@ -128,7 +128,7 @@
     <div class="success-order__card card">
         <div class="card__item">
             <div class="card__item--icon">
-                <img src="{{ asset('/assets/images/email/DateIcon.svg') }}" alt="">
+                <img src="{{ asset('/assets/images/email/DateIcon.png') }}" alt="">
             </div>
             <div class="card__item--info">
                 <div class="info__title">Departure Date</div>
@@ -137,7 +137,7 @@
         </div>
         <div class="card__item">
             <div class="card__item--icon">
-                <img src="{{ asset('/assets/images/email/TimeIcon.svg') }}" alt="">
+                <img src="{{ asset('/assets/images/email/TimeIcon.png') }}" alt="">
             </div>
             <div class="card__item--info">
                 <div class="info__title">Departure Time</div>
@@ -146,7 +146,7 @@
         </div>
         <div class="card__item">
             <div class="card__item--icon">
-                <img src="{{ asset('/assets/images/email/PickupLocationIcon.svg') }}" alt="">
+                <img src="{{ asset('/assets/images/email/PickupLocationIcon.png') }}" alt="">
             </div>
             <div class="card__item--info">
                 <div class="info__title">Pick-up Locations</div>
@@ -155,7 +155,7 @@
         </div>
         <div class="card__item">
             <div class="card__item--icon">
-                <img src="{{ asset('/assets/images/email/DropOffLocationIcon.svg') }}" alt="">
+                <img src="{{ asset('/assets/images/email/DropOffLocationIcon.png') }}" alt="">
             </div>
             <div class="card__item--info">
                 <div class="info__title">Drop-off Locations</div>
@@ -165,7 +165,7 @@
         @if($stops)
             <div class="card__item">
                 <div class="card__item--icon">
-                    <img src="{{ asset('/assets/images/email/AdditionalStopsIcon.svg') }}" alt="">
+                    <img src="{{ asset('/assets/images/email/AdditionalStopsIcon.png') }}" alt="">
                 </div>
                 <div class="card__item--info">
                     <div class="info__title">Additional stops</div>
@@ -175,7 +175,7 @@
         @endif
         <div class="card__item">
             <div class="card__item--icon">
-                <img src="{{ asset('/assets/images/email/CarTypeIcon.svg') }}" alt="">
+                <img src="{{ asset('/assets/images/email/CarTypeIcon.png') }}" alt="">
             </div>
             <div class="card__item--info">
                 <div class="info__title">Car type</div>
@@ -184,7 +184,7 @@
         </div>
         <div class="card__item">
             <div class="card__item--icon">
-                <img src="{{ asset('/assets/images/email/PassengersIcon.svg') }}" alt="">
+                <img src="{{ asset('/assets/images/email/PassengersIcon.png') }}" alt="">
             </div>
             <div class="card__item--info">
                 <div class="info__title">Number of the passengers</div>
