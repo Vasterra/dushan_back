@@ -9,6 +9,8 @@
 
 ## Technologies
 
+Laravel 10
+
 PHP 8.2
 
 php-cs-fixer
